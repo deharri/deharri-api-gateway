@@ -8,12 +8,7 @@ spring:
       globalcors:
         cors-configurations:
           '[/**]':
-            allowedOrigins:
-              - "http://localhost:3000"
-              - "http://localhost:5173"
-              - "http://localhost:5174"
-              - "http://localhost:8081"
-              - "http://184.73.182.190"
+            allowedOriginPatterns: "*"  # Changed from allowedOrigins
             allowedMethods:
               - GET
               - POST
@@ -33,14 +28,6 @@ spring:
           filters:
             - StripPrefix=1
             
-        # Add more services here as needed
-        # - id: another-service
-        #   uri: lb://ANOTHER-SERVICE
-        #   predicates:
-        #     - Path=/another/**
-        #   filters:
-        #     - StripPrefix=1
-
       # Default filters applied to all routes
       default-filters:
         - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_UNIQUE
@@ -58,17 +45,14 @@ eureka:
 server:
   port: ${GATEWAY_PORT:8080}
 
-# JWT Configuration - MUST use same secret as User Management Service
 jwt:
   secret: ${JWT_SECRET:hMbhMVBaYZDAM4pNeTZ0uNt4M9e/Zv5io+tqukPce9Q=}
 
-# Logging
 logging:
   level:
     org.springframework.cloud.gateway: DEBUG
     com.deharri.gateway: DEBUG
 
-# Actuator for health checks
 management:
   endpoints:
     web:
