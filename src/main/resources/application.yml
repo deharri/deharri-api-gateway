@@ -27,6 +27,14 @@ spring:
             - Path=/ums/**
           filters:
             - StripPrefix=1
+
+        # Chat Service
+        - id: chat-service
+          uri: lb://chat-service
+          predicates:
+            - Path=/chat/**
+          filters:
+            - StripPrefix=1
             
       # Default filters applied to all routes
       default-filters:

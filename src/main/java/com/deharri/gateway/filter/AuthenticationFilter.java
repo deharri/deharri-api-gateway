@@ -43,6 +43,9 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
             "/ums/swagger-ui",
             "/ums/v3/api-docs",
             "/ums/swagger-resources",
+            "/chat/swagger-ui",
+            "/chat/v3/api-docs",
+            "/chat/swagger-resources",
             "/actuator"
     );
 
