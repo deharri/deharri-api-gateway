@@ -35,6 +35,14 @@ spring:
             - Path=/chat/**
           filters:
             - StripPrefix=1
+
+        # Job Listing & Discovery Service
+        - id: job-service
+          uri: lb://job-service
+          predicates:
+            - Path=/jobs/**
+          filters:
+            - StripPrefix=1
             
       # Default filters applied to all routes
       default-filters:
