@@ -43,6 +43,14 @@ spring:
             - Path=/jobs/**
           filters:
             - StripPrefix=1
+
+        # Payment Service
+        - id: payment-service
+          uri: lb://payment-service
+          predicates:
+            - Path=/payments/**
+          filters:
+            - StripPrefix=1
             
       # Default filters applied to all routes
       default-filters:

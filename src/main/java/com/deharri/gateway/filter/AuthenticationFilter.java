@@ -39,7 +39,18 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
             "/ums/api/v1/auth/login",
             "/ums/api/v1/auth/refresh",
             "/ums/api/v1/auth/logout",
+            "/ums/api/v1/auth/send-otp",
+            "/ums/api/v1/agencies/internal",
+            // Dev-only data wipe endpoints (used by start.html). NOT for production.
+            "/ums/api/v1/dev",
+            "/jobs/api/v1/dev",
+            "/payments/api/v1/dev",
+            "/chat/api/v1/dev",
             "/ums/api/v1/users",           // Public user list
+            "/ums/api/v1/workers/nearby",         // Public nearby worker search
+            "/ums/api/v1/workers/internal",      // Service-to-service worker activation
+            "/ums/api/v1/internal",              // Service-to-service internal calls
+            "/chat/ws",                          // WebSocket — JWT validated by chat service itself
             "/ums/swagger-ui",
             "/ums/v3/api-docs",
             "/ums/swagger-resources",
@@ -49,6 +60,9 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
             "/jobs/swagger-ui",
             "/jobs/v3/api-docs",
             "/jobs/swagger-resources",
+            "/payments/swagger-ui",
+            "/payments/v3/api-docs",
+            "/payments/swagger-resources",
             "/actuator"
     );
 
@@ -72,6 +86,15 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
 
         // Extract JWT from Authorization header
         String authHeader = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
+
+        // SSE EventSource cannot set headers — fall back to ?token=… for the events path.
+        if ((authHeader == null || !authHeader.startsWith("Bearer "))
+                && path.startsWith("/jobs/api/v1/events/")) {
+            String q = request.getQueryParams().getFirst("token");
+            if (q != null && !q.isBlank()) {
+                authHeader = "Bearer " + q;
+            }
+        }
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             log.warn("Missing or invalid Authorization header for: {}", path);
